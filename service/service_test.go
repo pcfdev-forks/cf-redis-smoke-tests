@@ -18,13 +18,16 @@ import (
 )
 
 var _ = Describe("Redis Service", func() {
-	var shortTimeout = time.Minute * 3
-	var longTimeout = time.Minute * 15
-	var retryInterval = time.Second * 1
-	var appPath = "../assets/cf-redis-example-app"
-
-	var appName string
-	var context services.Context
+	var (
+		shortTimeout        = time.Minute * 3
+		longTimeout         = time.Minute * 15
+		retryInterval       = time.Second * 1
+		appPath             = "../assets/cf-redis-example-app"
+		serviceInstanceName string
+		planName            string
+		appName             string
+		context             services.Context
+	)
 
 	randomName := func() string {
 		return uuid.NewRandom().String()
@@ -122,6 +125,8 @@ var _ = Describe("Redis Service", func() {
 
 	BeforeEach(func() {
 		appName = randomName()
+		serviceInstanceName = randomName()
+
 		Eventually(
 			cf.Cf("push", appName, "-m", "256M", "-p", appPath, "-s", "cflinuxfs2", "-no-start"),
 			shortTimeout,
@@ -132,6 +137,16 @@ var _ = Describe("Redis Service", func() {
 	})
 
 	AfterEach(func() {
+		Eventually(cf.Cf("unbind-service", appName, serviceInstanceName), shortTimeout).Should(
+			Exit(0),
+			fmt.Sprintf(`{"FailReason": "Failed to unbind %s instance from test app"}`, planName),
+		)
+
+		Eventually(cf.Cf("delete-service", "-f", serviceInstanceName), shortTimeout).Should(
+			Exit(0),
+			fmt.Sprintf(`{"FailReason": "Failed to delete test %s instance"}`, planName),
+		)
+
 		Eventually(cf.Cf("delete", appName, "-f", "-r"), shortTimeout).Should(
 			Exit(0),
 			"{\"FailReason\": \"Failed to `cf delete` test app\"}",
@@ -145,8 +160,6 @@ var _ = Describe("Redis Service", func() {
 
 	AssertLifeCycleBehavior := func(planName string) {
 		It(strings.ToUpper(planName)+": create, bind to, write to, read from, unbind, and destroy a service instance", func() {
-			serviceInstanceName := randomName()
-
 			createServiceSession := cf.Cf("create-service", redisConfig.ServiceName, planName, serviceInstanceName)
 			createServiceSession.Wait(shortTimeout)
 
@@ -202,23 +215,13 @@ var _ = Describe("Redis Service", func() {
 				)
 				fmt.Println()
 
-				Eventually(cf.Cf("unbind-service", appName, serviceInstanceName), shortTimeout).Should(
-					Exit(0),
-					fmt.Sprintf(`{"FailReason": "Failed to unbind %s instance from test app"}`, planName),
-				)
-
-				Eventually(cf.Cf("delete-service", "-f", serviceInstanceName), shortTimeout).Should(
-					Exit(0),
-					fmt.Sprintf(`{"FailReason": "Failed to delete test %s instance"}`, planName),
-				)
 			}
 			createServiceStdout.CancelDetects()
-
 		})
 	}
 
 	Context("for each plan", func() {
-		for _, planName := range redisConfig.PlanNames {
+		for _, planName = range redisConfig.PlanNames {
 			AssertLifeCycleBehavior(planName)
 		}
 	})
