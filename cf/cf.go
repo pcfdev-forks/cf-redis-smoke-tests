@@ -13,7 +13,7 @@ import (
 	. "github.com/onsi/gomega"
 	"github.com/onsi/gomega/gexec"
 	helpersCF "github.com/pivotal-cf-experimental/cf-test-helpers/cf"
-	"github.com/pivotal-cf/cf-redis-smoke-tests/retry"
+	"github.com/pcfdev-forks/cf-redis-smoke-tests/retry"
 )
 
 // CF is a testing wrapper around the cf cli

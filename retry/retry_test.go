@@ -10,7 +10,7 @@ import (
 	. "github.com/onsi/gomega"
 	"github.com/onsi/gomega/gexec"
 
-	"github.com/pivotal-cf/cf-redis-smoke-tests/retry"
+	"github.com/pcfdev-forks/cf-redis-smoke-tests/retry"
 )
 
 func SucceedingSession() *gexec.Session {

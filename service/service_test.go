@@ -6,11 +6,11 @@ import (
 	"time"
 
 	"github.com/pborman/uuid"
-	"github.com/pivotal-cf/cf-redis-smoke-tests/redis"
-	"github.com/pivotal-cf/cf-redis-smoke-tests/service/reporter"
+	"github.com/pcfdev-forks/cf-redis-smoke-tests/redis"
+	"github.com/pcfdev-forks/cf-redis-smoke-tests/service/reporter"
 
 	"github.com/pivotal-cf-experimental/cf-test-helpers/services"
-	smokeTestCF "github.com/pivotal-cf/cf-redis-smoke-tests/cf"
+	smokeTestCF "github.com/pcfdev-forks/cf-redis-smoke-tests/cf"
 
 	. "github.com/onsi/ginkgo"
 )

@@ -7,7 +7,7 @@ import (
 
 	"github.com/onsi/gomega/gexec"
 	"github.com/pivotal-cf-experimental/cf-test-helpers/runner"
-	"github.com/pivotal-cf/cf-redis-smoke-tests/retry"
+	"github.com/pcfdev-forks/cf-redis-smoke-tests/retry"
 )
 
 // App is a helper around reading and writing to redis-example-app endpoints
