@@ -29,6 +29,18 @@ func NewStep(description string, task func()) *Step {
 	}
 }
 
+func ConditionalStep(executeStepCondition bool, description string, task func()) *Step {
+	if (!executeStepCondition) {
+		task  = func() {}
+	}
+
+	return &Step{
+		Description: description,
+		Result:      "DIDN'T RUN",
+		Task:        task,
+	}
+}
+
 type failure struct {
 	title   string
 	message string

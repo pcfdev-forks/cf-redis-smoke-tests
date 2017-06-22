@@ -177,7 +177,8 @@ var _ = Describe("Redis Service", func() {
 				"Log in as admin",
 				testCF.Auth(cfTestConfig.AdminUser, cfTestConfig.AdminPassword),
 			),
-			reporter.NewStep(
+			reporter.ConditionalStep(
+				cfTestConfig.CreatePermissiveSecurityGroup,
 				"Delete security group 'redis-smoke-tests-sg'",
 				testCF.DeleteSecurityGroup("redis-smoke-tests-sg"),
 			),
@@ -264,7 +265,8 @@ var _ = Describe("Redis Service", func() {
 					fmt.Sprintf("Target '%s' org and '%s' space", cfTestConfig.OrgName, cfTestConfig.SpaceName),
 					testCF.TargetOrgAndSpace(cfTestConfig.OrgName, cfTestConfig.SpaceName),
 				),
-				reporter.NewStep(
+				reporter.ConditionalStep(
+					cfTestConfig.CreatePermissiveSecurityGroup,
 					"Create and bind security group for running smoke tests",
 					testCF.CreateAndBindSecurityGroup("redis-smoke-tests-sg", appName, cfTestConfig.OrgName, cfTestConfig.SpaceName),
 				),
